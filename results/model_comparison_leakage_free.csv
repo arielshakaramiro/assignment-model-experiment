@@ -1,0 +1,5 @@
+Pendekatan,Accuracy,Precision (macro),Recall (macro),F1 (macro),Recall negatif
+[Leakage-free] TF-IDF + LogReg,0.6341,0.7414,0.7222,0.6333,1.0
+[Leakage-free] Gemini zero-shot,1.0,1.0,1.0,1.0,1.0
+[Leakage-free] Gemini few-shot,1.0,1.0,1.0,1.0,1.0
+"[Leakage-free] TF-IDF + LogReg, GroupKFold mean (5-fold)",0.54,0.6559,0.6578,0.5236,

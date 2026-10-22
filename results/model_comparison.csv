@@ -1,0 +1,5 @@
+Pendekatan,Accuracy,Precision (macro),Recall (macro),F1 (macro),Recall negatif,Invalid output,Latensi median / ulasan
+Baseline (selalu kelas mayoritas),0.55,0.275,0.5,0.3548,0.0,0,-
+TF-IDF + Logistic Regression,1.0,1.0,1.0,1.0,1.0,0,0.025 ms
+Gemini zero-shot (gemini-3.1-flash-lite),1.0,1.0,1.0,1.0,1.0,0,6.5 s
+Gemini few-shot (gemini-3.1-flash-lite),1.0,1.0,1.0,1.0,1.0,0,7.6 s

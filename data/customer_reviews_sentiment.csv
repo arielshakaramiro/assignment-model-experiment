@@ -1,0 +1,201 @@
+review_id,product_name,review_text,sentiment
+1,Kemeja Flanel,Pelayanan lambat dan tidak responsif saat dikomplain.,negatif
+2,Case HP,"Puas banget belanja disini, proses cepat dan barang aman.",positif
+3,Rice Cooker,"Terima kasih seller, barangnya awet dan sesuai deskripsi.",positif
+4,Case HP,Warna produk berbeda jauh dari foto di listing.,negatif
+5,Headset Bluetooth,"Terima kasih seller, barangnya awet dan sesuai deskripsi.",positif
+6,Sepatu Sneakers,"Packing rapi, produk sesuai deskripsi. Recommended seller!",positif
+7,Powerbank,Sudah bayar mahal tapi kualitas jauh dari ekspektasi.,negatif
+8,Lampu LED,"Belanja disini selalu puas, kualitas terjaga.",positif
+9,Botol Minum,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+10,Kaos Polos,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+11,Blender Mini,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+12,Jaket Hoodie,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+13,Rice Cooker,"Barang cacat produksi, jahitan lepas di beberapa bagian.",negatif
+14,Lampu LED,"Barang yang datang tidak sesuai dengan foto, kecewa berat.",negatif
+15,Case HP,Barang tidak berfungsi sama sekali begitu diterima.,negatif
+16,Sepatu Sneakers,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+17,Headset Bluetooth,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+18,Jaket Hoodie,"Puas banget belanja disini, proses cepat dan barang aman.",positif
+19,Kursi Lipat,"Produk original dan berfungsi dengan baik, terima kasih!",positif
+20,Botol Minum,"Pelayanan cepat tanggap, produk berkualitas tinggi.",positif
+21,Charger Cepat,"Sangat puas dengan pembelian ini, akan beli lagi di lain waktu.",positif
+22,Sepatu Sneakers,"Sudah langganan di toko ini, kualitas selalu konsisten bagus.",positif
+23,Botol Minum,"Respon cepat kalau ada pertanyaan, sangat membantu.",positif
+24,Kaos Polos,Respon penjual lambat dan terkesan tidak peduli komplain.,negatif
+25,Botol Minum,"Bahan murahan, tidak sesuai dengan harga yang dibayarkan.",negatif
+26,Botol Minum,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+27,Case HP,"Kualitas produk sangat memuaskan, akan order lagi.",positif
+28,Case HP,"Sangat mengecewakan, uang saya seperti terbuang percuma.",negatif
+29,Sandal Jepit,Pelayanan lambat dan tidak responsif saat dikomplain.,negatif
+30,Kaos Polos,Sudah bayar mahal tapi kualitas jauh dari ekspektasi.,negatif
+31,Case HP,"Ukuran dan warna berbeda dari pesanan, sangat kecewa.",negatif
+32,Headset Bluetooth,"Produk original dan berfungsi dengan baik, terima kasih!",positif
+33,Charger Cepat,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+34,Sepatu Sneakers,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+35,Kemeja Flanel,Barang tidak berfungsi sama sekali begitu diterima.,negatif
+36,Rice Cooker,Respon penjual lambat dan terkesan tidak peduli komplain.,negatif
+37,Lampu LED,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+38,Powerbank,Warna produk berbeda jauh dari foto di listing.,negatif
+39,Case HP,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+40,Charger Cepat,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+41,Rice Cooker,"Fast respon, pengiriman cepat, barang aman sampai tujuan.",positif
+42,Charger Cepat,"Barangnya bagus banget, sesuai foto dan pengiriman cepat!",positif
+43,Kemeja Flanel,"Ukuran dan warna berbeda dari pesanan, sangat kecewa.",negatif
+44,Tas Ransel,"Suka banget sama warnanya, sesuai ekspektasi.",positif
+45,Kursi Lipat,"Barang datang lebih cepat dari perkiraan, kualitas top!",positif
+46,Lampu LED,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+47,Headset Bluetooth,"Packing rapi, produk sesuai deskripsi. Recommended seller!",positif
+48,Rice Cooker,Sudah bayar mahal tapi kualitas jauh dari ekspektasi.,negatif
+49,Charger Cepat,"Respon cepat kalau ada pertanyaan, sangat membantu.",positif
+50,Charger Cepat,Respon penjual lambat dan terkesan tidak peduli komplain.,negatif
+51,Powerbank,"Deskripsi produk menyesatkan, jauh dari kenyataan.",negatif
+52,Sepatu Sneakers,"Sangat mengecewakan, uang saya seperti terbuang percuma.",negatif
+53,Rice Cooker,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+54,Kaos Polos,"Packing rapi, produk sesuai deskripsi. Recommended seller!",positif
+55,Tas Ransel,"Fast respon, pengiriman cepat, barang aman sampai tujuan.",positif
+56,Kaos Polos,"Pengalaman belanja terburuk, tidak akan order lagi disini.",negatif
+57,Lampu LED,"Packing rapi, produk sesuai deskripsi. Recommended seller!",positif
+58,Rice Cooker,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+59,Sepatu Sneakers,"Bahan murahan, tidak sesuai dengan harga yang dibayarkan.",negatif
+60,Case HP,"Kualitas produk sangat memuaskan, akan order lagi.",positif
+61,Charger Cepat,"Sangat mengecewakan, uang saya seperti terbuang percuma.",negatif
+62,Case HP,"Bahan murahan, tidak sesuai dengan harga yang dibayarkan.",negatif
+63,Kaos Polos,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+64,Jaket Hoodie,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+65,Tas Ransel,Warna produk berbeda jauh dari foto di listing.,negatif
+66,Blender Mini,Komplain tidak ditanggapi sama sekali oleh penjual.,negatif
+67,Sepatu Sneakers,"Respon cepat kalau ada pertanyaan, sangat membantu.",positif
+68,Sandal Jepit,"Ukuran tidak sesuai, terlalu kecil dari yang dipesan.",negatif
+69,Charger Cepat,"Sudah langganan di toko ini, kualitas selalu konsisten bagus.",positif
+70,Lampu LED,"Kualitas produk sangat memuaskan, akan order lagi.",positif
+71,Botol Minum,Komplain tidak ditanggapi sama sekali oleh penjual.,negatif
+72,Headset Bluetooth,"Suka banget sama warnanya, sesuai ekspektasi.",positif
+73,Jaket Hoodie,"Barangnya bagus banget, sesuai foto dan pengiriman cepat!",positif
+74,Blender Mini,"Suka banget sama warnanya, sesuai ekspektasi.",positif
+75,Jaket Hoodie,"Produk palsu, bukan barang original seperti yang dijanjikan.",negatif
+76,Charger Cepat,"Barang datang lebih cepat dari perkiraan, kualitas top!",positif
+77,Tas Ransel,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+78,Botol Minum,"Ukuran dan warna berbeda dari pesanan, sangat kecewa.",negatif
+79,Rice Cooker,"Produk original dan berfungsi dengan baik, terima kasih!",positif
+80,Jaket Hoodie,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+81,Blender Mini,"Sangat puas dengan pembelian ini, akan beli lagi di lain waktu.",positif
+82,Botol Minum,"Ukuran dan warna berbeda dari pesanan, sangat kecewa.",negatif
+83,Powerbank,"Barangnya bagus banget, sesuai foto dan pengiriman cepat!",positif
+84,Case HP,"Respon cepat kalau ada pertanyaan, sangat membantu.",positif
+85,Kaos Polos,Respon penjual lambat dan terkesan tidak peduli komplain.,negatif
+86,Lampu LED,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+87,Lampu LED,"Sudah langganan di toko ini, kualitas selalu konsisten bagus.",positif
+88,Sepatu Sneakers,"Sangat puas dengan pembelian ini, akan beli lagi di lain waktu.",positif
+89,Case HP,"Harga worth it dengan kualitas yang didapat, sangat puas.",positif
+90,Sandal Jepit,"Barangnya bagus banget, sesuai foto dan pengiriman cepat!",positif
+91,Kaos Polos,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+92,Case HP,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+93,Case HP,"Fast respon, pengiriman cepat, barang aman sampai tujuan.",positif
+94,Sepatu Sneakers,"Fast respon, pengiriman cepat, barang aman sampai tujuan.",positif
+95,Lampu LED,"Bahan murahan, tidak sesuai dengan harga yang dibayarkan.",negatif
+96,Kursi Lipat,"Barang datang lebih cepat dari perkiraan, kualitas top!",positif
+97,Kursi Lipat,"Kualitas produk sangat memuaskan, akan order lagi.",positif
+98,Jaket Hoodie,"Produk original dan berfungsi dengan baik, terima kasih!",positif
+99,Tas Ransel,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+100,Powerbank,"Kualitas premium dengan harga bersahabat, recommended!",positif
+101,Case HP,"Produk palsu, bukan barang original seperti yang dijanjikan.",negatif
+102,Case HP,Pelayanan lambat dan tidak responsif saat dikomplain.,negatif
+103,Jaket Hoodie,"Fast respon, pengiriman cepat, barang aman sampai tujuan.",positif
+104,Tas Ransel,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+105,Sepatu Sneakers,"Deskripsi produk menyesatkan, jauh dari kenyataan.",negatif
+106,Botol Minum,"Terima kasih seller, barangnya awet dan sesuai deskripsi.",positif
+107,Tas Ransel,"Deskripsi produk menyesatkan, jauh dari kenyataan.",negatif
+108,Kursi Lipat,"Deskripsi produk menyesatkan, jauh dari kenyataan.",negatif
+109,Kemeja Flanel,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+110,Case HP,"Barang datang lebih cepat dari perkiraan, kualitas top!",positif
+111,Charger Cepat,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+112,Tas Ransel,"Sangat puas dengan pembelian ini, akan beli lagi di lain waktu.",positif
+113,Charger Cepat,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+114,Sepatu Sneakers,"Packing rapi, produk sesuai deskripsi. Recommended seller!",positif
+115,Kemeja Flanel,Komplain tidak ditanggapi sama sekali oleh penjual.,negatif
+116,Headset Bluetooth,"Suka banget sama warnanya, sesuai ekspektasi.",positif
+117,Kursi Lipat,"Harga worth it dengan kualitas yang didapat, sangat puas.",positif
+118,Case HP,"Produk palsu, bukan barang original seperti yang dijanjikan.",negatif
+119,Rice Cooker,Barang datang dalam kondisi rusak dan packing asal-asalan.,negatif
+120,Tas Ransel,"Barang cacat produksi, jahitan lepas di beberapa bagian.",negatif
+121,Kursi Lipat,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+122,Rice Cooker,Pelayanan lambat dan tidak responsif saat dikomplain.,negatif
+123,Headset Bluetooth,"Sangat mengecewakan, uang saya seperti terbuang percuma.",negatif
+124,Botol Minum,"Puas banget belanja disini, proses cepat dan barang aman.",positif
+125,Botol Minum,"Packing rapi, produk sesuai deskripsi. Recommended seller!",positif
+126,Jaket Hoodie,"Sangat mengecewakan, uang saya seperti terbuang percuma.",negatif
+127,Sandal Jepit,"Ukuran dan warna berbeda dari pesanan, sangat kecewa.",negatif
+128,Headset Bluetooth,Barang tidak berfungsi sama sekali begitu diterima.,negatif
+129,Rice Cooker,"Kualitas produk sangat memuaskan, akan order lagi.",positif
+130,Jaket Hoodie,"Produk original dan berfungsi dengan baik, terima kasih!",positif
+131,Tas Ransel,"Terima kasih seller, barangnya awet dan sesuai deskripsi.",positif
+132,Powerbank,Sudah bayar mahal tapi kualitas jauh dari ekspektasi.,negatif
+133,Botol Minum,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+134,Headset Bluetooth,"Pengiriman berantakan, barang sampai dalam kondisi kotor.",negatif
+135,Tas Ransel,"Puas banget belanja disini, proses cepat dan barang aman.",positif
+136,Kursi Lipat,"Produk original dan berfungsi dengan baik, terima kasih!",positif
+137,Sandal Jepit,"Bahan murahan, tidak sesuai dengan harga yang dibayarkan.",negatif
+138,Rice Cooker,"Respon cepat kalau ada pertanyaan, sangat membantu.",positif
+139,Case HP,Respon penjual lambat dan terkesan tidak peduli komplain.,negatif
+140,Jaket Hoodie,"Kualitas premium dengan harga bersahabat, recommended!",positif
+141,Case HP,"Pengalaman belanja terburuk, tidak akan order lagi disini.",negatif
+142,Headset Bluetooth,"Barang datang lebih cepat dari perkiraan, kualitas top!",positif
+143,Kursi Lipat,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+144,Kaos Polos,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+145,Botol Minum,"Packing rapi, produk sesuai deskripsi. Recommended seller!",positif
+146,Kursi Lipat,Warna produk berbeda jauh dari foto di listing.,negatif
+147,Rice Cooker,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+148,Tas Ransel,"Pengalaman belanja terburuk, tidak akan order lagi disini.",negatif
+149,Sandal Jepit,"Barangnya bagus banget, sesuai foto dan pengiriman cepat!",positif
+150,Jaket Hoodie,"Belanja disini selalu puas, kualitas terjaga.",positif
+151,Tas Ransel,Sudah bayar mahal tapi kualitas jauh dari ekspektasi.,negatif
+152,Sandal Jepit,"Sangat puas dengan pembelian ini, akan beli lagi di lain waktu.",positif
+153,Kursi Lipat,"Barang datang lebih cepat dari perkiraan, kualitas top!",positif
+154,Sepatu Sneakers,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+155,Jaket Hoodie,Warna produk berbeda jauh dari foto di listing.,negatif
+156,Case HP,"Ukuran dan warna berbeda dari pesanan, sangat kecewa.",negatif
+157,Charger Cepat,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+158,Blender Mini,"Produk palsu, bukan barang original seperti yang dijanjikan.",negatif
+159,Sandal Jepit,"Pengiriman berantakan, barang sampai dalam kondisi kotor.",negatif
+160,Kemeja Flanel,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+161,Lampu LED,Barang datang dalam kondisi rusak dan packing asal-asalan.,negatif
+162,Kaos Polos,"Fast respon, pengiriman cepat, barang aman sampai tujuan.",positif
+163,Jaket Hoodie,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+164,Kemeja Flanel,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+165,Case HP,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+166,Kursi Lipat,"Pelayanan cepat tanggap, produk berkualitas tinggi.",positif
+167,Rice Cooker,"Suka banget sama warnanya, sesuai ekspektasi.",positif
+168,Sepatu Sneakers,"Tidak sesuai standar, banyak cacat pada produk yang diterima.",negatif
+169,Headset Bluetooth,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+170,Sandal Jepit,"Respon cepat kalau ada pertanyaan, sangat membantu.",positif
+171,Rice Cooker,"Sangat puas dengan pembelian ini, akan beli lagi di lain waktu.",positif
+172,Sepatu Sneakers,"Pengiriman berantakan, barang sampai dalam kondisi kotor.",negatif
+173,Tas Ransel,Respon penjual lambat dan terkesan tidak peduli komplain.,negatif
+174,Rice Cooker,"Ukuran tidak sesuai, terlalu kecil dari yang dipesan.",negatif
+175,Kemeja Flanel,Barang tidak berfungsi sama sekali begitu diterima.,negatif
+176,Sepatu Sneakers,"Sangat mengecewakan, uang saya seperti terbuang percuma.",negatif
+177,Rice Cooker,"Bahan nyaman dipakai, ukuran pas, tidak mengecewakan.",positif
+178,Lampu LED,"Kualitas premium dengan harga bersahabat, recommended!",positif
+179,Sepatu Sneakers,"Suka banget sama warnanya, sesuai ekspektasi.",positif
+180,Sandal Jepit,Barang tidak berfungsi sama sekali begitu diterima.,negatif
+181,Rice Cooker,"Mantap, sesuai gambar dan harga terjangkau.",positif
+182,Tas Ransel,"Produk original dan berfungsi dengan baik, terima kasih!",positif
+183,Tas Ransel,"Sangat puas dengan pembelian ini, akan beli lagi di lain waktu.",positif
+184,Headset Bluetooth,Respon penjual lambat dan terkesan tidak peduli komplain.,negatif
+185,Charger Cepat,"Mantap, sesuai gambar dan harga terjangkau.",positif
+186,Powerbank,"Belanja disini selalu puas, kualitas terjaga.",positif
+187,Sepatu Sneakers,"Kualitas produk sangat memuaskan, akan order lagi.",positif
+188,Kursi Lipat,"Sudah langganan di toko ini, kualitas selalu konsisten bagus.",positif
+189,Jaket Hoodie,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+190,Headset Bluetooth,Barang tidak berfungsi sama sekali begitu diterima.,negatif
+191,Kemeja Flanel,"Pelayanan ramah dan responsif, barang sampai lebih cepat dari estimasi.",positif
+192,Kursi Lipat,Pelayanan lambat dan tidak responsif saat dikomplain.,negatif
+193,Jaket Hoodie,"Pengiriman berantakan, barang sampai dalam kondisi kotor.",negatif
+194,Case HP,"Fast respon, pengiriman cepat, barang aman sampai tujuan.",positif
+195,Blender Mini,"Deskripsi produk menyesatkan, jauh dari kenyataan.",negatif
+196,Kaos Polos,"Bahan murahan, tidak sesuai dengan harga yang dibayarkan.",negatif
+197,Charger Cepat,"Pengiriman lambat sekali, sudah dua minggu belum sampai.",negatif
+198,Kemeja Flanel,"Produknya rapi dan bersih, tidak ada cacat sama sekali.",positif
+199,Headset Bluetooth,"Kualitas produk jelek, baru dipakai sekali sudah rusak.",negatif
+200,Kaos Polos,"Pengalaman belanja terburuk, tidak akan order lagi disini.",negatif

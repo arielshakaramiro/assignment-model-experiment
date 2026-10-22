@@ -1,0 +1,3 @@
+Strategi,Panggilan API,Token input/ulasan,Token output+thinking/ulasan,Latensi median (s),Latensi rata-rata (s),Latensi p95 (s),Biaya eksperimen (USD),Proyeksi 1 juta ulasan (USD),Proyeksi 1 juta ulasan (IDR)
+zero_shot,26,139.6,112.1,6.48,11.46,22.01,0.005278,203.01,"3,349,659"
+few_shot,26,245.6,109.9,7.64,27.13,93.42,0.005882,226.22,"3,732,649"

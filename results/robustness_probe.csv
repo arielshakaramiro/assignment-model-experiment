@@ -1,0 +1,9 @@
+review_text,label_manual,tantangan,pred_klasik,proba_positif_klasik,pred_gemini_few_shot
+"Tidak mengecewakan sama sekali, bakal repeat order.",positif,negasi,positif,0.54,positif
+"Gak nyesel beli di sini, recommended bgt",positif,slang + negasi,positif,0.65,positif
+"Wah hebat, baru sehari dipakai udah rusak. Mantap.",negatif,sarkasme,negatif,0.45,negatif
+"Barangnya bagus sih, tapi pengirimannya lama banget dan kurirnya kasar.",negatif,campuran,positif,0.67,negatif
+"Kirain bakal jelek, ternyata kualitasnya bagus banget.",positif,ekspektasi terbalik,positif,0.61,positif
+"brg gk sesuai pesanan, admin jg slow resp",negatif,singkatan/typo,positif,0.53,negatif
+"Murah tapi bukan murahan, puas!",positif,kontras,negatif,0.48,positif
+"Not recommended, quality is very poor.",negatif,bahasa Inggris,positif,0.67,negatif
