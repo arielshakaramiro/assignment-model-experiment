@@ -1,222 +1,223 @@
-# AI Model Experiment & Evaluation: Sentiment Analysis Ulasan Pelanggan
+# AI Model Experiment & Evaluation: Customer Review Sentiment Analysis
 
-**Model Klasik (Scikit-learn) vs LLM API (Gemini)**
+**Classic Machine Learning (Scikit-learn) vs LLM API (Gemini)**
 Individual Assignment, AI Engineering Bootcamp · Muhammad Ariel Shakaramiro
 
-![Ringkasan perbandingan](documentation/model_comparison_summary.png)
+![Comparison summary](documentation/model_comparison_summary.png)
 
-> **Ringkasan:** Pada test set resmi, model klasik dan Gemini sama-sama mendapat skor sempurna (F1 1.00). Namun 98% kalimat di test set ternyata sudah ada di train set. Saat diuji pada kalimat yang benar-benar baru, model klasik turun ke F1 0.52–0.63, sedangkan Gemini tetap 1.00, dan Gemini juga benar 8/8 pada ulasan sulit (typo, sarkasme, campuran, bahasa Inggris). **Rekomendasi: kembangkan Gemini zero-shot dengan arsitektur asinkron + caching**, lalu siapkan jalur distilasi ke model sendiri.
+> **Summary:** On the official test set, both the classic model and Gemini achieve a perfect score (F1 1.00). However, 98% of the test sentences turned out to already exist in the training set. When tested on genuinely unseen sentences, the classic model drops to F1 0.52–0.63, while Gemini stays at 1.00 and also gets 8/8 on difficult reviews (typos, sarcasm, mixed sentiment, English). **Recommendation: develop Gemini zero-shot with an asynchronous + caching architecture**, then prepare a distillation path toward an in-house model.
 
 ---
 
 ## 1. Problem Statement
 
-**Objective.** Tim produk e-commerce ingin fitur otomatis untuk mengklasifikasikan sentimen ulasan pelanggan pada halaman produk. Eksperimen ini membandingkan dua kandidat pendekatan, yaitu model klasik yang dilatih sendiri dan LLM API berbasis prompting, lalu menghasilkan **rekomendasi berbasis data** tentang pendekatan yang layak dikembangkan ke produksi. Pertimbangannya mencakup performa, effort implementasi, kecepatan, dan biaya.
+**Objective.** An e-commerce product team wants an automated feature that classifies the sentiment of customer reviews on product pages. This experiment compares two candidate approaches, a self-trained classic model and a prompt-based LLM API, and produces a **data-driven recommendation** on which approach should be developed for production. The comparison covers performance, implementation effort, speed, and cost.
 
-**Target/label.** Klasifikasi biner kolom `sentiment`:
+**Target/label.** Binary classification of the `sentiment` column:
 
-| Label | Definisi |
+| Label | Definition |
 |---|---|
-| `positif` | Pelanggan puas atau memuji produk, pengiriman, atau pelayanan |
-| `negatif` | Pelanggan kecewa, mengeluh, atau melaporkan masalah |
+| `positif` (positive) | The customer is satisfied or praises the product, delivery, or service |
+| `negatif` (negative) | The customer is disappointed, complains, or reports a problem |
 
-Input model hanya `review_text`. `product_name` tidak dipakai karena sentimen ditentukan oleh isi ulasan.
+The model input is `review_text` only. `product_name` is not used because sentiment is determined by the review content.
 
-**Batasan & asumsi.**
-- Memakai dataset resmi assignment tanpa modifikasi. Label dianggap *ground truth*.
-- Hanya dua kelas. Ulasan netral atau campuran berada di luar cakupan.
-- Tidak ada training deep learning dari nol.
-- Biaya API diestimasi dari token aktual × harga publik Gemini API (Oktober 2026). Harga bisa berubah.
+**Constraints & assumptions.**
+- The official assignment dataset is used without modification. Labels are treated as *ground truth*.
+- Two classes only. Neutral or mixed reviews are out of scope.
+- No deep learning training from scratch.
+- API cost is estimated from actual token usage × Gemini API public pricing (October 2026). Prices may change.
 
 ## 2. Dataset
 
-`data/customer_reviews_sentiment.csv`: 200 ulasan berbahasa Indonesia, kolom `review_id`, `product_name`, `review_text`, `sentiment`.
+`data/customer_reviews_sentiment.csv`: 200 Indonesian-language reviews with columns `review_id`, `product_name`, `review_text`, `sentiment`.
 
-| Karakteristik | Nilai |
+| Characteristic | Value |
 |---|---|
-| Jumlah baris | 200 (positif 110 / negatif 90, cukup seimbang) |
-| Missing value | 0 |
-| **Teks ulasan unik** | **hanya 40** (20 positif, 20 negatif), masing-masing berulang 1–12× |
-| Label bertentangan untuk teks sama | 0 |
-| Panjang ulasan | 6–11 kata |
+| Rows | 200 (110 positive / 90 negative, fairly balanced) |
+| Missing values | 0 |
+| **Unique review texts** | **only 40** (20 positive, 20 negative), each repeated 1–12× |
+| Conflicting labels for identical text | 0 |
+| Review length | 6–11 words |
 
-**Temuan kunci: data leakage.** Karena hanya ada 40 kalimat unik, split acak per baris (80/20, `random_state=42`, stratified) menghasilkan test set yang **39 dari 40 barisnya (98%) identik dengan kalimat di train set**. Karena itu eksperimen ini memakai dua skema evaluasi:
+**Key finding: data leakage.** Because there are only 40 unique sentences, a random row-level split (80/20, `random_state=42`, stratified) produces a test set in which **39 of 40 rows (98%) are identical to sentences in the training set**. This experiment therefore uses two evaluation schemes:
 
-1. **Split utama** (sesuai brief/starter): perbandingan resmi, test set **sama** untuk kedua pendekatan (`results/test_set.csv`).
-2. **Split leakage-free** (`GroupShuffleSplit` per teks unik + 5-fold `GroupKFold` CV): mengukur generalisasi pada kalimat yang belum pernah dilihat. Test set ini juga dipakai untuk **kedua** pendekatan.
+1. **Main split** (as specified in the brief/starter): the official comparison, with the **same** test set for both approaches (`results/test_set.csv`).
+2. **Leakage-free split** (`GroupShuffleSplit` by unique text + 5-fold `GroupKFold` CV): measures generalization to sentences never seen during training. This test set is also used for **both** approaches.
 
-## 3. Ringkasan Eksperimen
+## 3. Experiment Overview
 
-### Pendekatan 1: Model Klasik (Scikit-learn)
-- **Fitur:** `TfidfVectorizer(ngram_range=(1,2), sublinear_tf=True)`. Bigram menangkap negasi seperti *"tidak sesuai"*. Stopword tidak dihapus karena *"tidak"* membawa sinyal sentimen. Hasilnya 384 fitur.
-- **Model:** `LogisticRegression(max_iter=1000)`, cepat dan interpretable. Bobot terkuat: *lambat, jauh dari, rusak, tidak sesuai* (negatif) vs *cepat, rapi, puas, recommended* (positif).
-- **Baseline:** `DummyClassifier` kelas mayoritas.
+### Approach 1: Classic Model (Scikit-learn)
+- **Features:** `TfidfVectorizer(ngram_range=(1,2), sublinear_tf=True)`. Bigrams capture negations such as *"tidak sesuai"* ("not as described"). Stopwords are kept because *"tidak"* ("not") carries sentiment signal. This yields 384 features.
+- **Model:** `LogisticRegression(max_iter=1000)`, fast and interpretable. Strongest weights: *lambat* (slow), *jauh dari* (far from), *rusak* (broken), *tidak sesuai* (not as described) for negative vs *cepat* (fast), *rapi* (neat), *puas* (satisfied), *recommended* for positive.
+- **Baseline:** majority-class `DummyClassifier`.
 
-### Pendekatan 2: LLM API (Gemini)
-- **Model:** `gemini-3.1-flash-lite`. `gemini-2.0-flash` pada starter sudah dihentikan Google (1 Juni 2026), dan kuota harian free tier `gemini-3.8-flash` habis di tengah eksperimen. Agar konsisten, **semua prediksi LLM berasal dari satu model**.
-- **Prompt:** system instruction berisi peran, definisi tiap label, peringatan negasi, dan aturan "jawab satu kata". Diuji dua strategi:
-  - **Zero-shot:** tanpa contoh.
-  - **Few-shot:** + 4 contoh berlabel (2 positif, 2 negatif) dari train set yang **dipastikan tidak ada di test set mana pun**.
-- **Parameter:**
+### Approach 2: LLM API (Gemini)
+- **Model:** `gemini-3.1-flash-lite`. The `gemini-2.0-flash` model used in the starter was shut down by Google (June 1, 2026), and the free-tier daily quota for `gemini-3.8-flash` ran out mid-experiment. For consistency, **all LLM predictions come from a single model**.
+- **Prompt:** a system instruction defining the role, each label, a reminder about negation, and an "answer with one word" rule. Two strategies were tested:
+  - **Zero-shot:** no examples.
+  - **Few-shot:** + 4 labeled examples (2 positive, 2 negative) from the training set, **guaranteed not to appear in any test set**.
+- **Parameters:**
 
-| Parameter | Nilai | Alasan |
+| Parameter | Value | Reason |
 |---|---|---|
-| `temperature` | 0.0 | Klasifikasi butuh jawaban deterministik & reproducible, bukan kreativitas |
-| `thinking_level` | LOW | Tugas sederhana, sehingga latensi dan token "berpikir" bisa ditekan |
-| `response_mime_type` + enum schema | `positif`/`negatif` | Membatasi output agar selalu valid. Hasilnya 0 output invalid. |
+| `temperature` | 0.0 | Classification needs deterministic, reproducible answers, not creativity |
+| `thinking_level` | LOW | A simple task, so latency and "thinking" tokens can be kept low |
+| `response_mime_type` + enum schema | `positif`/`negatif` | Constrains the output so it is always valid. Result: 0 invalid outputs. |
 | `seed` | 42 | Reproducibility |
 
-- **Pemanggilan API:** satu panggilan per teks unik, hasilnya disimpan di `results/llm_cache.json`. Ada jeda antar panggilan karena rate limit free tier, dan error 429/503 dicoba ulang dengan jeda yang makin lama.
+- **API calls:** one call per unique text, with results stored in `results/llm_cache.json`. Calls are spaced out to respect free-tier rate limits, and 429/503 errors are retried with increasing delays.
 
-## 4. Hasil Evaluasi & Perbandingan
+## 4. Evaluation Results & Comparison
 
-### 4.1 Test set utama (n = 40, sama untuk semua pendekatan)
+### 4.1 Main test set (n = 40, same for all approaches)
 
-| Pendekatan | Accuracy | Precision (macro) | Recall (macro) | F1 (macro) | Recall negatif | Latensi / ulasan |
+| Approach | Accuracy | Precision (macro) | Recall (macro) | F1 (macro) | Negative recall | Latency / review |
 |---|---|---|---|---|---|---|
-| Baseline (kelas mayoritas) | 0.550 | 0.275 | 0.500 | 0.355 | 0.000 | - |
-| TF-IDF + Logistic Regression | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | ±0,02 ms |
-| Gemini zero-shot | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 6,5 s (median) |
-| Gemini few-shot | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 7,6 s (median) |
+| Baseline (majority class) | 0.550 | 0.275 | 0.500 | 0.355 | 0.000 | - |
+| TF-IDF + Logistic Regression | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | ~0.02 ms |
+| Gemini zero-shot | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 6.5 s (median) |
+| Gemini few-shot | 1.000 | 1.000 | 1.000 | 1.000 | 1.000 | 7.6 s (median) |
 
-**Confusion matrix:** identik untuk ketiga pendekatan.
+**Confusion matrix:** identical for all three approaches.
 
-| | pred negatif | pred positif |
+| | pred negative | pred positive |
 |---|---|---|
-| aktual negatif | 18 | 0 |
-| aktual positif | 0 | 22 |
+| actual negative | 18 | 0 |
+| actual positive | 0 | 22 |
 
-**Interpretasi.**
-- **Accuracy 1.00:** semua 40 ulasan benar, jauh di atas baseline 0.55.
-- **Precision 1.00:** tidak ada *false alarm*, tidak ada ulasan positif yang ditandai negatif.
-- **Recall negatif 1.00:** semua keluhan tertangkap. Ini metrik bisnis terpenting.
-- **F1 1.00:** precision dan recall seimbang sempurna.
+**Interpretation.**
+- **Accuracy 1.00:** all 40 reviews are correct, well above the 0.55 baseline.
+- **Precision 1.00:** no *false alarms*. No positive review is flagged as negative.
+- **Negative recall 1.00:** every complaint is caught. This is the most important business metric.
+- **F1 1.00:** precision and recall are perfectly balanced.
 
-Namun skor seri ini **tidak bisa dipakai untuk memilih pendekatan**. Bagi model klasik, 1.00 adalah artefak leakage (ia sudah "melihat" 98% kalimat test). Bagi Gemini, skor ini murni, karena Gemini tidak pernah dilatih pada data ini. Few-shot juga tidak menambah akurasi dibanding zero-shot, padahal token input naik ±76%.
+However, this tie **cannot be used to choose an approach**. For the classic model, 1.00 is a leakage artifact (it has already "seen" 98% of the test sentences). For Gemini the score is genuine, because Gemini was never trained on this data. Few-shot also adds no accuracy over zero-shot, even though input tokens increase by ~76%.
 
-### 4.2 Evaluasi leakage-free (kalimat test tidak pernah dilihat saat training)
+### 4.2 Leakage-free evaluation (test sentences never seen during training)
 
-| Pendekatan | Accuracy | Precision (macro) | Recall (macro) | F1 (macro) | Recall negatif |
+| Approach | Accuracy | Precision (macro) | Recall (macro) | F1 (macro) | Negative recall |
 |---|---|---|---|---|---|
-| TF-IDF + LogReg (GroupShuffleSplit, n=41 / 8 teks unik) | 0.634 | 0.741 | 0.722 | 0.633 | 1.000 |
-| TF-IDF + LogReg (5-fold GroupKFold, rata-rata) | 0.540 ± 0.15 | 0.656 | 0.658 | 0.524 ± 0.16 | - |
+| TF-IDF + LogReg (GroupShuffleSplit, n=41 / 8 unique texts) | 0.634 | 0.741 | 0.722 | 0.633 | 1.000 |
+| TF-IDF + LogReg (5-fold GroupKFold, mean) | 0.540 ± 0.15 | 0.656 | 0.658 | 0.524 ± 0.16 | - |
 | **Gemini zero-shot** (GroupShuffleSplit) | **1.000** | **1.000** | **1.000** | **1.000** | **1.000** |
 | **Gemini few-shot** (GroupShuffleSplit) | **1.000** | **1.000** | **1.000** | **1.000** | **1.000** |
 
-**Interpretasi.** Model klasik **runtuh** ke tingkat hampir menebak (accuracy 0.54 di CV, baseline 0.55). Recall negatifnya memang 1.00, tetapi precision negatifnya hanya 0.48: **15 dari 27 ulasan positif salah ditandai negatif** (lihat confusion matrix pada grafik di atas). Model "menuduh" negatif setiap bertemu kata yang tidak dikenal. Gemini tetap sempurna (41/41). Catatan: test set ini hanya berisi 8 kalimat unik, jadi angka 1.00 punya ketidakpastian lebar, tapi arahnya konsisten dengan uji ketahanan.
+**Interpretation.** The classic model **collapses** to near-guessing level (0.54 accuracy in CV vs a 0.55 baseline). Its negative recall is 1.00, but its negative precision is only 0.48: **15 of 27 positive reviews are wrongly flagged as negative** (see the confusion matrix in the chart above). The model "accuses" a review of being negative whenever it meets an unfamiliar word. Gemini stays perfect (41/41). Note: this test set contains only 8 unique sentences, so the 1.00 score has wide uncertainty, but the direction is consistent with the robustness test.
 
-### 4.3 Uji ketahanan (8 ulasan buatan di luar dataset, ilustratif)
+### 4.3 Robustness test (8 hand-written reviews outside the dataset, illustrative)
 
-| Tantangan | Contoh | Label | Klasik | Gemini few-shot |
+| Challenge | Example (English gloss) | Label | Classic | Gemini few-shot |
 |---|---|---|---|---|
-| negasi | Tidak mengecewakan sama sekali, bakal repeat order. | positif | benar (p=0.54) | benar |
-| slang + negasi | Gak nyesel beli di sini, recommended bgt | positif | benar | benar |
-| sarkasme | Wah hebat, baru sehari dipakai udah rusak. Mantap. | negatif | benar (p=0.45) | benar |
-| campuran | Barangnya bagus sih, tapi pengirimannya lama banget dan kurirnya kasar. | negatif | salah (positif) | benar |
-| ekspektasi terbalik | Kirain bakal jelek, ternyata kualitasnya bagus banget. | positif | benar | benar |
-| singkatan/typo | brg gk sesuai pesanan, admin jg slow resp | negatif | salah (positif) | benar |
-| kontras | Murah tapi bukan murahan, puas! | positif | salah (negatif) | benar |
-| bahasa Inggris | Not recommended, quality is very poor. | negatif | salah (positif) | benar |
+| negation | Tidak mengecewakan sama sekali, bakal repeat order. *(Not disappointing at all, will order again.)* | positive | correct (p=0.54) | correct |
+| slang + negation | Gak nyesel beli di sini, recommended bgt *(No regrets buying here, highly recommended)* | positive | correct | correct |
+| sarcasm | Wah hebat, baru sehari dipakai udah rusak. Mantap. *(Wow great, broke after one day. Awesome.)* | negative | correct (p=0.45) | correct |
+| mixed | Barangnya bagus sih, tapi pengirimannya lama banget dan kurirnya kasar. *(The item is good, but delivery was very slow and the courier was rude.)* | negative | wrong (positive) | correct |
+| reversed expectation | Kirain bakal jelek, ternyata kualitasnya bagus banget. *(Thought it'd be bad, turns out the quality is great.)* | positive | correct | correct |
+| abbreviation/typo | brg gk sesuai pesanan, admin jg slow resp *(item not as ordered, admin also slow to respond)* | negative | wrong (positive) | correct |
+| contrast | Murah tapi bukan murahan, puas! *(Cheap but not cheaply made, satisfied!)* | positive | wrong (negative) | correct |
+| English | Not recommended, quality is very poor. | negative | wrong (positive) | correct |
 | **Total** | | | **4/8** | **8/8** |
 
-Model klasik hanya mengenali **kata** yang pernah dilihat, bukan **makna** kalimat. Bahkan prediksinya yang benar hanya punya probabilitas 0.45–0.65.
+The classic model only recognizes **words** it has seen before, not the **meaning** of a sentence. Even its correct predictions have probabilities of just 0.45–0.65.
 
-### 4.4 Kecepatan & biaya
+### 4.4 Speed & cost
 
-| | Model klasik | Gemini zero-shot | Gemini few-shot |
+| | Classic model | Gemini zero-shot | Gemini few-shot |
 |---|---|---|---|
-| Effort awal | Butuh data berlabel + training | Tanpa training, cukup prompt | Prompt + 4 contoh |
-| Latensi/ulasan | ±0,02 ms (CPU lokal) | median 6,5 s · p95 22 s | median 7,6 s · p95 93 s |
-| Token/ulasan (input / output+thinking) | - | 140 / 112 | 246 / 110 |
-| Biaya eksperimen (26 panggilan) | Rp0 | US$0,0053 | US$0,0059 |
-| Proyeksi 1 juta ulasan | ≈ Rp0 | ±US$203 (≈ Rp3,3 juta) | ±US$226 (≈ Rp3,7 juta) |
+| Initial effort | Needs labeled data + training | No training, prompt only | Prompt + 4 examples |
+| Latency / review | ~0.02 ms (local CPU) | median 6.5 s · p95 22 s | median 7.6 s · p95 93 s |
+| Tokens / review (input / output+thinking) | - | 140 / 112 | 246 / 110 |
+| Experiment cost (26 calls) | $0 | US$0.0053 | US$0.0059 |
+| Projected cost per 1M reviews | ≈ $0 | ~US$203 | ~US$226 |
 
-Harga `gemini-3.1-flash-lite`: US$0,25 / 1 juta token input dan US$1,50 / 1 juta token output (termasuk thinking). Sekitar **83% biaya output adalah thinking token** (±110 dari 112 token), padahal jawabannya hanya 2 token. Latensi Gemini terukur saat server Google sedang padat (banyak error 503), sehingga lebih tinggi dari kondisi normal.
+`gemini-3.1-flash-lite` pricing: US$0.25 per 1M input tokens and US$1.50 per 1M output tokens (including thinking). About **83% of the output cost is thinking tokens** (~110 of 112 tokens), even though the answer itself is only 2 tokens. Gemini latency was measured while Google's servers were under heavy load (many 503 errors), so it is higher than under normal conditions.
 
-## 5. Analisis Trade-off & Limitation
+## 5. Trade-off & Limitation Analysis
 
-**Performa.** Di test set resmi keduanya seri sempurna. Di kondisi yang mencerminkan produksi (kalimat baru, bahasa tidak baku), **Gemini jelas unggul**: F1 1.00 vs 0.52–0.63, dan 8/8 vs 4/8 pada ulasan sulit.
+**Performance.** On the official test set the two approaches tie perfectly. Under production-like conditions (unseen sentences, informal language), **Gemini is clearly better**: F1 1.00 vs 0.52–0.63, and 8/8 vs 4/8 on difficult reviews.
 
-**Effort implementasi.** Model klasik butuh dataset berlabel besar dan beragam, dan 40 kalimat unik terbukti tidak cukup. Gemini tidak butuh training sama sekali, tapi butuh effort operasional: API key, retry, caching, pemantauan kuota, dan antisipasi pergantian model.
+**Implementation effort.** The classic model needs a large, diverse labeled dataset, and 40 unique sentences proved insufficient. Gemini needs no training at all, but it requires operational effort: API key management, retries, caching, quota monitoring, and handling model deprecations.
 
-**Kecepatan & biaya.** Model klasik ratusan ribu kali lebih cepat dan praktis gratis. Gemini butuh detik per ulasan dan biayanya naik linear dengan volume (±Rp3,3 juta per 1 juta ulasan).
+**Speed & cost.** The classic model is hundreds of thousands of times faster and practically free. Gemini takes seconds per review, and its cost grows linearly with volume (~US$203 per 1M reviews).
 
-**Limitation model klasik:**
-- Menghafal, bukan memahami. Skor 1.00 hanya karena leakage.
-- Vocabulary tertutup (384 fitur), sehingga gagal pada typo, singkatan, dan bahasa Inggris.
-- Bias kata permukaan: "bagus" membuat keluhan campuran dianggap positif, "murahan" membuat pujian dianggap negatif.
-- Variansi tinggi antar-fold (±0.15) karena data latih terlalu sedikit.
+**Classic model limitations:**
+- It memorizes rather than understands. The 1.00 score comes only from leakage.
+- Closed vocabulary (384 features), so it fails on typos, abbreviations, and English.
+- Surface-word bias: *"bagus"* (good) makes a mixed complaint look positive, and *"murahan"* (cheaply made) makes praise look negative.
+- High variance across folds (±0.15) because the training data is too small.
 
-**Limitation Gemini (banyak yang dialami langsung saat eksperimen):**
-- **Ketergantungan pada layanan eksternal:** kuota harian free tier `gemini-3.8-flash` habis setelah ±15 panggilan (429), project sempat diblokir (403), `gemini-2.5-flash` tidak tersedia untuk project baru (404), server padat (503), dan model di starter (`gemini-2.0-flash`) sudah dihentikan.
-- **Latensi tinggi dan tidak stabil** (median ±7 s, terburuk >90 s), tidak cocok untuk klasifikasi sinkron.
-- **Biaya per panggilan**, didominasi thinking token.
-- **Privasi:** teks ulasan dikirim ke pihak ketiga.
-- **Evaluasi masih terbatas:** dataset berisi kalimat eksplisit dan pendek. Kesalahan prediksi Gemini belum teramati, sehingga pola kegagalannya pada ulasan nyata yang panjang/ambigu/netral belum diketahui.
+**Gemini limitations (many experienced first-hand during the experiment):**
+- **Dependence on an external service:** the `gemini-3.8-flash` free-tier daily quota ran out after ~15 calls (429), the project was temporarily blocked (403), `gemini-2.5-flash` was unavailable to new projects (404), servers were overloaded (503), and the starter's model (`gemini-2.0-flash`) has already been shut down.
+- **High and unstable latency** (median ~7 s, worst case >90 s), unsuitable for synchronous classification.
+- **Per-call cost**, dominated by thinking tokens.
+- **Privacy:** review text is sent to a third party.
+- **Limited evaluation:** the dataset contains short, explicit sentences. No Gemini errors were observed, so its failure patterns on real reviews that are long, ambiguous, or neutral are still unknown.
 
-## 6. Rekomendasi Technical Approach
+## 6. Technical Approach Recommendation
 
-### Kembangkan **LLM API (Gemini, zero-shot)** sebagai pendekatan utama, dengan arsitektur asinkron + caching, dan siapkan jalur distilasi ke model sendiri.
+### Develop the **LLM API (Gemini, zero-shot)** as the primary approach, with an asynchronous + caching architecture, and prepare a distillation path toward an in-house model.
 
-**Alasan:**
-1. **Satu-satunya pendekatan yang terbukti generalisasi.** Di produksi hampir semua ulasan adalah kalimat baru, jadi yang relevan adalah skor leakage-free (Gemini 1.00 vs klasik 0.52–0.63), bukan skor 1.00 di split resmi.
-2. **Tahan terhadap bahasa ulasan nyata** (typo, slang, sarkasme, campuran, bahasa Inggris): 8/8 vs 4/8.
-3. **Tidak butuh dataset berlabel besar**, yang memang belum tersedia.
-4. **Zero-shot cukup.** Few-shot tidak menambah akurasi tapi menambah ±76% token input.
+**Reasons:**
+1. **The only approach proven to generalize.** In production almost every review is a new sentence, so the relevant score is the leakage-free one (Gemini 1.00 vs classic 0.52–0.63), not the 1.00 on the official split.
+2. **Robust to real review language** (typos, slang, sarcasm, mixed sentiment, English): 8/8 vs 4/8.
+3. **No large labeled dataset required**, which is not yet available.
+4. **Zero-shot is enough.** Few-shot adds no accuracy but adds ~76% more input tokens.
 
-**Mitigasi kelemahan LLM:**
-- **Asinkron:** klasifikasikan saat ulasan dikirim (background job/queue) dan simpan labelnya. Halaman produk hanya membaca label, sehingga latensi tidak terasa pengguna.
-- **Caching per teks:** 80% baris di dataset ini adalah duplikat. Dengan `temperature=0`, ulasan identik cukup diklasifikasikan sekali.
-- **Paid tier + retry/backoff + fallback model**, dan pantau jadwal deprecation model.
-- **`thinking_level=MINIMAL`** untuk memangkas ±83% biaya output (validasi ulang akurasinya).
-- **Gagal = tunda, bukan tebak:** ulasan yang gagal diklasifikasi ditandai "pending" dan diproses ulang.
+**Mitigating LLM weaknesses:**
+- **Asynchronous processing:** classify reviews when they are submitted (background job/queue) and store the label. Product pages only read the stored label, so users never feel the latency.
+- **Per-text caching:** 80% of the rows in this dataset are duplicates. With `temperature=0`, identical reviews only need to be classified once.
+- **Paid tier + retry/backoff + fallback model**, and track model deprecation schedules.
+- **`thinking_level=MINIMAL`** to cut ~83% of output cost (re-validate accuracy first).
+- **On failure, defer instead of guessing:** reviews that fail classification are marked "pending" and reprocessed.
 
-**Jangka menengah: hybrid/distilasi.** Gunakan label Gemini (plus validasi manual pada sampel) untuk membangun dataset ribuan ulasan nyata. Latih model sendiri (TF-IDF+LogReg atau fine-tune IndoBERT) dan evaluasi dengan split leakage-free. Jika setara, model sendiri mengambil alih traffic volume tinggi (biaya ≈ Rp0, latensi milidetik), dan LLM dipakai untuk kasus ber-confidence rendah.
+**Medium term: hybrid/distillation.** Use Gemini labels (plus manual validation on a sample) to build a dataset of thousands of real reviews. Train an in-house model (TF-IDF + LogReg or a fine-tuned IndoBERT) and evaluate it with a leakage-free split. If it performs on par, the in-house model can handle high-volume traffic (≈ $0 cost, millisecond latency), with the LLM reserved for low-confidence cases.
 
-**Kapan rekomendasi berubah:** model klasik lebih tepat jika tersedia dataset berlabel besar, volume sangat tinggi, dibutuhkan respons real-time di bawah 100 ms, atau kebijakan privasi melarang pengiriman data ke pihak ketiga.
+**When the recommendation changes:** the classic model is the better choice if a large labeled dataset is available, volume is very high, real-time responses under 100 ms are required, or privacy policy forbids sending data to third parties.
 
-## 7. Cara Menjalankan
+## 7. How to Run
 
 ```bash
-# 1. Clone & masuk folder
-git clone <url-repo> && cd model-experiment-assignment
+# 1. Clone the repository
+git clone https://github.com/arielshakaramiro/assignment-model-experiment.git
+cd assignment-model-experiment
 
-# 2. Buat virtual environment & install dependency
+# 2. Create a virtual environment & install dependencies
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# 3. (Opsional) Siapkan API key Gemini untuk memanggil API ulang
-cp .env.example .env               # isi GEMINI_API_KEY, dan GEMINI_MODEL=gemini-3.1-flash-lite
+# 3. (Optional) Set up a Gemini API key to call the API again
+cp .env.example .env               # fill in GEMINI_API_KEY, and GEMINI_MODEL=gemini-3.1-flash-lite
 
-# 4. Jalankan notebook
-jupyter notebook notebook/experiment_notebook.ipynb   # atau buka di VS Code -> Run All
+# 4. Run the notebook
+jupyter notebook notebook/experiment_notebook.ipynb   # or open it in VS Code -> Run All
 ```
 
-**Catatan:**
-- **Tanpa API key**, notebook tetap berjalan tanpa error dan mereproduksi seluruh hasil memakai respons Gemini yang tersimpan di `results/llm_cache.json`.
-- Untuk memanggil API ulang (misal setelah mengubah prompt), hapus `results/llm_cache.json`.
-- Atur kecepatan panggilan dengan `GEMINI_RPM` (default 5 request/menit) sesuai kuota akun.
-- API key **tidak pernah** di-hardcode, dan `.env` sudah masuk `.gitignore`.
+**Notes:**
+- **Without an API key**, the notebook still runs without errors and reproduces every result using the Gemini responses stored in `results/llm_cache.json`.
+- To call the API again (e.g., after changing the prompt), delete `results/llm_cache.json`.
+- Adjust the request rate with `GEMINI_RPM` (default 5 requests/minute) to match your account quota.
+- The API key is **never** hard-coded, and `.env` is listed in `.gitignore`.
 
-## 8. Struktur Project
+## 8. Project Structure
 
 ```
-model-experiment-assignment/
+assignment-model-experiment/
 ├── data/
-│   └── customer_reviews_sentiment.csv     # dataset asli (tidak diubah)
+│   └── customer_reviews_sentiment.csv     # original dataset (unmodified)
 ├── notebook/
-│   └── experiment_notebook.ipynb          # seluruh eksperimen, evaluasi, analisis & rekomendasi
+│   └── experiment_notebook.ipynb          # full experiment, evaluation, analysis & recommendation
 ├── documentation/
-│   └── model_comparison_summary.png       # grafik ringkasan perbandingan
-├── results/                               # output eksperimen (dibuat otomatis oleh notebook)
-│   ├── test_set.csv                       # test set utama yang dipakai kedua pendekatan
-│   ├── predictions_test_set.csv           # prediksi per baris kedua pendekatan
-│   ├── model_comparison.csv               # tabel ringkasan (split utama)
-│   ├── model_comparison_leakage_free.csv  # tabel ringkasan (leakage-free)
-│   ├── robustness_probe.csv               # uji ketahanan
-│   ├── llm_cost_latency.csv               # token, latensi, biaya Gemini
-│   ├── llm_cache.json                     # respons mentah Gemini
+│   └── model_comparison_summary.png       # comparison summary chart
+├── results/                               # experiment outputs (generated by the notebook)
+│   ├── test_set.csv                       # main test set used by both approaches
+│   ├── predictions_test_set.csv           # per-row predictions from both approaches
+│   ├── model_comparison.csv               # summary table (main split)
+│   ├── model_comparison_leakage_free.csv  # summary table (leakage-free)
+│   ├── robustness_probe.csv               # robustness test
+│   ├── llm_cost_latency.csv               # Gemini tokens, latency, cost
+│   ├── llm_cache.json                     # raw Gemini responses
 │   └── metrics_summary.json
 ├── .env.example
 ├── README.md
